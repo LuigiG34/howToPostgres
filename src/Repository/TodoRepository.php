@@ -22,7 +22,9 @@ final class TodoRepository
     public function insert(string $title, bool $done = false): int
     {
         $st = $this->pdo->prepare("INSERT INTO todos (title, done) VALUES (:t, :d) RETURNING id");
-        $st->execute([':t' => $title, ':d' => $done]);
+        $st->bindValue(':t', $title, \PDO::PARAM_STR);
+        $st->bindValue(':d', $done, \PDO::PARAM_BOOL);
+        $st->execute();
         return (int)$st->fetchColumn();
     }
 
